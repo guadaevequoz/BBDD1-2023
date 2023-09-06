@@ -28,4 +28,54 @@
     3. Falso. La clave debería ser `idic`.
     4. Verdadero. Es una opción.
     5. Falso.
-6.
+6.  Modelo E/R:
+
+    ![Untitled](img/tp1_6.png)
+
+    Modelo relacional:
+
+    - Pozo (**#pozo**, latitud, longitud, nombre, fecha)
+    - Monitoreo (**#monitoreo**, fecha, método)
+    - parámetro (**#parametro**, nombre, valor_de_ref)
+    - resultado (**#resultado**, valor_obtenido)
+    - analogicos (**#serie**, ultima_fecha)
+    - digitales (**#serie**, marca, modelo)
+    - realizan (**#pozo**, #monitoreo)
+    - miden (**#monitoreo**, **#parametro**)
+    - obtiene (**#monitoreo**, **#parametrom, #resultado**)
+    - utilizó (**#resultado**, **#serie**)
+
+7.  Modelo E/R: **_CONSULTA: USUARIOS Y ENTRENAMIENTO SE TOMA COMO UNO PARA LOS OBJETIVOS??_**
+
+    ![Untitled](img/tp1_7.png)
+
+    Modelo relacional:
+
+    - usuarios (**email**, nombre, peso, altura)
+    - entrenamiento (**#entrenamiento**, tiempo, calorias)
+    - logro (**#logro**, nombre, descripcion)
+    - premio (**#premio**, fecha)
+    - objetivo (**#objetivo**, tiempo, porcentaje)
+    - correr (**#entrenamiento**, velocidad)
+    - realizan (**email**, **#entrenamiento**)
+    - obtener (**email, #logro**)
+    - genera (**#logro, #premio**)
+    - definir (**#objetivo, #entrenamiento**) **//SI IRIA TODO JUNTO ENTRENAMIENTO Y USUARIO HABRIA QUE AGREGAR EL EMAIL**
+
+8.  Modelo E/R:
+
+    ![Untitled](img/tp1_8.png)
+
+9.  Modelo E/R:
+
+    ![Untitled](img/tp1_9.png)
+
+10. Modelo E/R: ayuda no se que estoy haciendo
+
+    ![Untitled](img/tp1_10.png)
+
+11. Modelo E/R: jasdasd ????
+
+    ![Untitled](img/tp1_11.png)
+
+12. 😴🥱
