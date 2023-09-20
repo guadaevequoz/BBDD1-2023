@@ -85,12 +85,59 @@
 
     Modelo relacional:
 
+    - usuario (**nombre**, email, nombre_completo)
+    - álbum (**#album**, creacion, nombre, desc)
+    - contenido (**#contenido**, comentario, fecha)
+    - foto (**#contenido**, resolucion, formato)
+    - video (**#contenido**, duración)
+    - publicación (**#publi**, texto, fecha)
+    - etiqueta (**#etiqueta**, nombre)
+    - contienen (**#publi**, **#etiqueta**)
+    - guardar (**#contenido**, #publi)
+    - cargar (**#album**, **nombre**, #contenido)
+    - crear (**nombre**, #album)
+    - participa (**nombre**, **#album**)
+
 10. Modelo E/R: ayuda no se que estoy haciendo
 
     ![Untitled](img/tp1_10.png)
 
-11. Modelo E/R: jasdasd ????
+    Modelo relacional:
+
+    - usuario (**email**, nombre, contraseña)
+    - búsqueda (**#busqueda**, rango, precio, cant_personas)
+    - sitio (**#sitio**, nombre)
+    - habitacion (**#habitacion**, capacidad, detalles, categoria)
+    - hotel(**#hotel**, nombre, estrellas, ubicación)
+    - realizar (**email**, **#busqueda**)
+    - arrojar (**#busqueda**, #sitio, #habitacion, #hotel)
+    - publica (**#sitio**, **#habitacion**, **#hotel**)
+    - pertenecer(**#habitacion**, **#hotel**)
+
+11. Modelo E/R:
 
     ![Untitled](img/tp1_11.png)
+
+    Modelo relacional:
+
+    - producto(**#prod**)
+    - forma_de_presentacion(**#forma**)
+    - farmacia(**#sucursal**)
+    - vendedor(**#legajo**)
+    - turno (**#turno**)
+    - cliente(**#cliente**)
+    - telefono(**#tel**)
+    - direccion(**#dir**)
+    - compra(**#compra**)
+    - renglon(**#renglon**)
+    - adoptar (**#prod**, **#forma**)
+    - comercializar (**#sucursal**, **#prod**, **#forma**)
+    - vender (**#legajo**, **#sucursal**, **#prod**, **#forma**)
+    - trabajar (**#legajo**, **#sucursal**)
+    - tiene (**#legajo**, **#sucursal**, **#turno**),
+    - registrar (**#legajo**, **#sucursal**, **#prod**, **#forma**, **#renglon**)
+    - contiene (**#compra**, #renglon)
+    - corresponde (**#cliente**, #compra)
+    -
 
 12. 😴🥱
