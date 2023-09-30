@@ -142,6 +142,22 @@
 
    Podría seguir hasta hacer una particion con contenido?
 
+   **Clave primaria:**
+
+   (#suscripcion email_adicional, #contenido)
+
+   **Dependencias multivaluadas:**
+
+   No tiene.
+
+   **¿L12 cumple con 4FN?**
+
+   Si ya que no tiene dependencias multivaluadas.
+
+   **Particiones finales en 4FN:**
+
+   Las mismas de BCNF.
+
 2. ```
    MEDICION_AMBIENTAL(#medicion, #pozo, valor_medicion, #parametro, fecha_medicion,
    cuil_operario, #instrumento, nombre_parametro, valor_ref, descripcion_pozo,
@@ -307,7 +323,7 @@
 
    **// CONSULTAR: #pozo deberia ser superclave también?**
 
-   **Particiones finales:**
+   **Particiones finales BCNF:**
 
    - L1(**#medicion**, #pozo, fecha_medicion, cuil_operario)
    - L3(**#parametro**, nombre_parametro, valor_ref)
@@ -316,6 +332,33 @@
    - L9(**dominio_vehiculo**, fecha_adquisicion)
    - L11(**#medicion, #parametro**, valor_medicion)
    - L12(**#medicion, #pozo**, **#parametro, #instrumento**, descripcion_pozo, fecha_perforacion, **dominio_vehiculo**)
+
+   **Clave primaria:**
+
+   (**#medicion, #pozo**, **#parametro, #instrumento**, descripcion_pozo, fecha_perforacion, **dominio_vehiculo**)
+
+   **Dependencias multivaluadas:**
+
+   - dm1: **#medicion, #pozo →> #parametro**
+   - dm2: **#medicion, #pozo →> #instrumento**
+
+   **¿L12 cumple con 4FN?**
+
+   No, ya que existen dependencias multivualadas `DM1, DM2` que no son triviales en L12. Por lo tanto se particiona L12 teniendo en cuenta las dependencias multivaluadas, por ejemplo DM1.
+
+   - L13 (**#medicion, #pozo**, **#parametro**, descripcion_pozo, fecha_perforacion, **dominio_vehiculo**)
+   - L14 (**#medicion, #pozo**, **#instrumento**, descripcion_pozo, fecha_perforacion, **dominio_vehiculo**)
+
+   **Particiones finales en 4FN:**
+
+   - L1(**#medicion**, #pozo, fecha_medicion, cuil_operario)
+   - L3(**#parametro**, nombre_parametro, valor_ref)
+   - L5(**#instrumento**, marca_instrumento, modelo_instrumento)
+   - L7(**cuil_operario,** apellido_operario, nombre_operario, fecha_nacimiento)
+   - L9(**dominio_vehiculo**, fecha_adquisicion)
+   - L11(**#medicion, #parametro**, valor_medicion)
+   - L13 (**#medicion, #pozo**, **#parametro**, descripcion_pozo, fecha_perforacion, **dominio_vehiculo**)
+   - L14 (**#medicion, #pozo**, **#instrumento**, descripcion_pozo, fecha_perforacion, **dominio_vehiculo**)
 
 3. ```
    FESTIVALES (#festival, denominacion_festival, localidad, cuil_musico, nombre_musico, fecha_nacimiento, #banda, nombre_banda,
@@ -463,7 +506,7 @@
 
    Sí, ya que las dependencias funcionales restantes son triviales.
 
-   **Particiones finales:**
+   **Particiones finales en BCNF:**
 
    - L1(#festival, denominacion_festival, localidad)
    - L3(#banda, nombre_banda, estilo_musical)
@@ -471,3 +514,288 @@
    - L7( #tema, nombre_tema, duracion)
    - L9( #tema, cuil_musico, instrumento)
    - L10(#festival, #tema, cuil_musico, #banda, cuil_auspiciante, url_plataforma_entradas, #locacion)
+
+   **Clave primaria:**
+
+   (#festival, #tema, cuil_musico, #banda, cuil_auspiciante, url_plataforma_entradas, #locacion)
+
+   **Dependencias multivaluadas:**
+
+   - dm1: #festival, #tema, cuil_musico, #banda, #locacion →> cuil_auspiciante
+   - dm2: #festival, #tema, cuil_musico, #banda, #locacion→>url_plataforma_entradas
+
+   **¿L10 cumple con 4FN?**
+
+   No, ya que existen dependencias multivualadas `DM1, DM2` que no son triviales en L10. Por lo tanto se particiona L10 teniendo en cuenta las dependencias multivaluadas, por ejemplo DM1.
+
+   - L11(#festival, #tema, cuil_musico, #banda, cuil_auspiciante, #locacion)
+   - L12(#festival, #tema, cuil_musico, #banda, url_plataforma_entradas, #locacion)
+
+   **Particiones finales en 4FN:**
+
+   - L1(#festival, denominacion_festival, localidad)
+   - L3(#banda, nombre_banda, estilo_musical)
+   - L5(cuil_musico, nombre_musico, fecha_nacimiento)
+   - L7( #tema, nombre_tema, duracion)
+   - L9( #tema, cuil_musico, instrumento)
+   - L11(#festival, #tema, cuil_musico, #banda, cuil_auspiciante, #locacion)
+   - L12(#festival, #tema, cuil_musico, #banda, url_plataforma_entradas, #locacion)
+
+   **//CONSULTAR: SI UNA BANDA PUEDE TENER VARIOS TEMAS COMO HAGO??**
+
+4. **LA DEJO PARA EL PARCIAL, la corrijo con la de [pedrobrost](https://github.com/pedrobrost/Informatica-UNLP/blob/master/BBDD1/practica3/punto05.md)**
+
+   ```jsx
+   DISPOSITIVOS(
+     Marca_id,
+     descripMarca,
+     modelo_id,
+     descripModelo,
+     equipo_tipo_id,
+     descripEquipoTipo,
+     nombreEmpresa,
+     cuit,
+     direcciónEmpresa,
+     usuario_id,
+     apyn,
+     direcciónUsuario,
+     cuil,
+     plan_id,
+     descripPlan,
+     importe,
+     equipo_id,
+     imei,
+     fec_alta,
+     fec_baja,
+     observaciones,
+     línea_id,
+     fec_alta_linea,
+     fec_baja_linea
+   );
+   ```
+
+   Donde:
+
+   ● Para cada equipo interesa conocer su tipo, modelo, imei, fecha en que se dio de alta,
+   fecha en que se da de baja y las observaciones que sean necesarias.
+   ● De cada marca se conoce su descripción
+   ● De cada modelo se conoce su descripción y a qué marca pertenece.
+   ● Para cada plan, se registra qué empresa lo brinda, descripción e importe del mismo.
+
+   ● Para cada tipo de equipo se conoce la descripción
+   ● Para cada empresa se registra el nombre, cuit y dirección
+   ● De cada usuario se registra su nombre y apellido, número de documento, dirección y
+   CUIL
+   ● Para cada línea se necesita registrar qué plan posee, la fecha de alta de la línea, la
+   fecha de baja, el equipo que la posee y el usuario de la misma.
+
+5. ```jsx
+   ORGANIZACION_EVENTOS (#evento, fecha_evento, motivo_evento, #salon, nombre_salon, #grupo, nombre_grupo, nro_integrantes_grupo, #organizador,
+   nombre_organizador, telefono_organizador, años_exp_organizador, #staff, nombre_staff, telefono_staff, rol_staff)
+   ```
+
+   Donde:
+
+   ● De cada evento se conoce un `identificador`, que es único, la `fecha`, el `motivo`, el `salón` de fiestas donde se desarrollará y el `grupo` que tocará en el mismo.
+   ● De cada `salón` de fiestas posible se conoce un número identificador, único en el sistema y su `ubicación`.
+   ● De los `grupos` se conoce un identificador (único) su `nombre` y la `cantidad` de integrantes que lo conforman. Además, se sabe que cada grupo de los registrados en el sistema tiene un contrato de exclusividad con un `único organizador`.
+   ● De los `organizadores` se conoce su nombre, teléfono y los años de experiencia que lleva en su trabajo. También tiene asociado un número que lo identifica inequívocamente.
+   ● Cada organizador tiene contrato con muchos grupos, sin embargo este solo organiza cada una de sus fechas disponibles con un único grupo, que será el que toque la noche
+   del evento.
+   ● Cada evento contrata a una serie de personas que serán el `staff` del mismo. De cada uno de estos se conoce un identificador, único en el sistema, el nombre, el teléfono y el rol que ocupa.
+
+   **\*\*\*\***Clave candidata:**\*\*\*\***
+
+   CC1: (#evento, #salon, #grupo, #organizador, #staff)
+
+   **Dependencias funcionales:**
+
+   - df1: #evento → fecha_evento, motivo_evento, #salon, #grupo, #staff
+   - df2: #salon → nombre_salon
+   - df3: #grupo → nombre_grupo, nro_integrantes_grupo, #organizador
+   - df4: #organizador → nombre_organizador, telefono_organizador, años_exp_organizador
+   - df5: #organizador, #grupo → fecha_evento **//ES NECESARIO???**
+   - df6: #staff → nombre_staff, telefono_staff, rol_staff
+
+   **¿ORGANIZACION_EVENTOS** **cumple con BCNF?**
+
+   No, ya que hay una dependencia funcional `df1` donde `#evento` no es superclave en O**RGANIZACION_EVENTOS**, ni una dependencia funcional trivial. Por lo tanto particiono el esquema contemplando `df1`.
+
+   - L1 (#evento, fecha_evento, motivo_evento)
+   - L2(#evento, #salon, nombre_salon, #grupo, nombre_grupo, nro_integrantes_grupo, #organizador,
+     nombre_organizador, telefono_organizador, años_exp_organizador, #staff, nombre_staff, telefono_staff, rol_staff)
+
+   **¿Se perdió información?**
+
+   No, ya que `L1 ∩ L2 = #evento`es clave en L1.
+
+   **¿Se perdieron dependencias funcionales?**
+
+   No, ya que:
+
+   - df1 vale en L1
+   - el resto valen en L2
+
+   **¿L1 cumple con BCNF?**
+
+   Sí, ya que vale df1 y `#evento` es superclave del esquema L1.
+
+   **¿L2 cumple con BCNF?**
+
+   No, ya que hay una dependencia funcional `df2` donde `#salon` no es superclave en L2, ni una dependencia funcional trivial. Por lo tanto particiono el esquema contemplando `df2`.
+
+   - L3 (#salon, nombre_salon)
+   - L4 (#evento, #salon, #grupo, nombre_grupo, nro_integrantes_grupo, #organizador,
+     nombre_organizador, telefono_organizador, años_exp_organizador, #staff, nombre_staff, telefono_staff, rol_staff)
+
+   **¿Se perdió información?**
+
+   No, ya que `L3 ∩ L4 = #salon` es clave en L3.
+
+   **¿Se perdieron dependencias funcionales?**
+
+   No, ya que:
+
+   - df2 vale en L3
+   - el resto valen en L4
+
+   **¿L3 cumple con BCNF?**
+
+   Sí, ya que vale df2 y `#salon` es superclave del esquema L3.
+
+   **¿L4 cumple con BCNF?**
+
+   No, ya que hay una dependencia funcional `df3` donde `#grupo` no es superclave en L4, ni una dependencia funcional trivial. Por lo tanto particiono el esquema contemplando `df3`.
+
+   - L5 (#grupo, nombre_grupo, nro_integrantes_grupo)
+   - L6 (#evento, #salon, #grupo, #organizador,
+     nombre_organizador, telefono_organizador, años_exp_organizador, #staff, nombre_staff, telefono_staff, rol_staff)
+
+   **¿Se perdió información?**
+
+   No, ya que `L5 ∩ L6 = #grupo` es clave en L5.
+
+   **¿Se perdieron dependencias funcionales?**
+
+   No, ya que:
+
+   - df3 vale en L5
+   - el resto valen en L6
+
+   **¿L5 cumple con BCNF?**
+
+   Sí, ya que vale df3 y `#grupo` es superclave del esquema L5.
+
+   **¿L6 cumple con BCNF?**
+
+   No, ya que hay una dependencia funcional `df4` donde `#organizador` no es superclave en L6, ni una dependencia funcional trivial. Por lo tanto particiono el esquema contemplando `df4`.
+
+   - L7 (#organizador, nombre_organizador, telefono_organizador, años_exp_organizador)
+   - L8 (#evento, #salon, #grupo, #organizador, #staff, nombre_staff, telefono_staff, rol_staff)
+
+   **¿Se perdió información?**
+
+   No, ya que `L7 ∩ L8 = #organizador` es clave en L7.
+
+   **¿Se perdieron dependencias funcionales?**
+
+   No, ya que:
+
+   - df4 vale en L7
+   - el resto valen en L8
+
+   **¿L7 cumple con BCNF?**
+
+   Sí, ya que vale df4 y `#organizador` es superclave del esquema L7.
+
+   **¿L8 cumple con BCNF?**
+
+   No, ya que hay una dependencia funcional `df6` donde `#staff` no es superclave en L8, ni una dependencia funcional trivial. Por lo tanto particiono el esquema contemplando `df6`.
+
+   - L9 (#staff, nombre_staff, telefono_staff, rol_staff)
+   - L10 (#evento, #salon, #grupo, #organizador, #staff)
+
+   **¿Se perdió información?**
+
+   No, ya que `L9 ∩ L10 = #staff` es clave en L9.
+
+   **¿Se perdieron dependencias funcionales?**
+
+   No, ya que:
+
+   - df6 vale en L9
+   - el resto valen en L10
+
+   **¿L9 cumple con BCNF?**
+
+   Sí, ya que vale df6 y `#staff` es superclave del esquema L9.
+
+   **¿L10 cumple con BCNF?**
+
+   Sí, ya que las dependencias funcionales restantes son triviales (si no contamos la `df5`).
+
+   **Particiones finales BCNF:**
+
+   - L1 (#evento, fecha_evento, motivo_evento)
+   - L3 (#salon, nombre_salon)
+   - L5 (#grupo, nombre_grupo, nro_integrantes_grupo)
+   - L7 (#organizador, nombre_organizador, telefono_organizador, años_exp_organizador)
+   - L9 (#staff, nombre_staff, telefono_staff, rol_staff)
+   - L10 (#evento, #salon, #grupo, #organizador, #staff)
+
+   **Clave primaria:**
+
+   (#evento, #salon, #grupo, #organizador, #staff)
+
+   **Dependencias multivaluadas:**
+
+   No tiene creo.
+
+   **¿L10 cumple con 4FN?**
+
+   Si ya que no tiene dependencias multivaluadas.
+
+   **Particiones finales en 4FN:**
+
+   - L1 (#evento, fecha_evento, motivo_evento)
+   - L3 (#salon, nombre_salon)
+   - L5 (#grupo, nombre_grupo, nro_integrantes_grupo)
+   - L7 (#organizador, nombre_organizador, telefono_organizador, años_exp_organizador)
+   - L9 (#staff, nombre_staff, telefono_staff, rol_staff)
+   - L10 (#evento, #salon, #grupo, #organizador, #staff)
+
+6. **LA DEJO PARA EL PARCIAL, la corrijo con la de [pedrobrost](https://github.com/pedrobrost/Informatica-UNLP/blob/master/BBDD1/practica3/punto08.md)**
+
+   ```jsx
+   INTERNACION(
+     codHospital,
+     cantidadHabitaciones,
+     direcciónInternacionPaciente,
+     telefonoInternacionPaciente,
+     dniPaciente,
+     domicilioPaciente,
+     nombreApellidoPaciente,
+     domicilioHospital,
+     ciudadHospital,
+     directorHospital,
+     fechaInicioInternacion,
+     cantDiasIntenacion,
+     doctorQueAtiendePaciente,
+     insumoEmpleadoInternación
+   );
+   ```
+
+   Donde:
+
+   ● cantidadHabitaciones es la cantidad de habitaciones que hay en cada hospital
+   ● direcciónInternacionPaciente y telefonoInternacionPaciente, indican la dirección y el
+   teléfono que deja un paciente cuando se interna
+   ● domicilioPaciente es el domicilio que figura en el dni del paciente
+   ● Un paciente para una internación es atendido por muchos doctores
+   (doctorQueAtiendePaciente)
+   ● Para una internación de un paciente, se emplean varios insumos
+   (insumoEmpleadoInternación)
+   ● El código de hospital (codHospital) es único.
+   ● Existe un único director por hospital. Un director podría dirigir más de un hospital
+   ● Un paciente en la misma fecha no puede estar internado en diferentes hospitales
+   ● En un domicilioHospital de una ciudad existe un único hospital
