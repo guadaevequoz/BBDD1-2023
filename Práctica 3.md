@@ -21,51 +21,58 @@
         - Las columnas deben ser del mismo dominio
 2.  Es necesario que los atributos sean compatibles en las operaciones: resta, unión y producto natural.
 3.  La respuesta correcta es: `(#compra, cantidad)`. Ya que primero se toman solo los #producto de Producto y luego se hace la división con **COMPRA_PRODUCTO**, así que se listan todos los elementos de ese esquema sin el atributo **#producto.**
-4.  1. Esta consulta primero toma todos los vuelos realizados en el proximo año y los almacena en VUELOS_PROX_AÑO. Luego, se hace un natural obteniendo: todos los nuevos del próximo año, las reservas correspondientes y los pasajeros correspondientes. Así se obtienen todos los pasajeros junto con su vuelo y su asiento que tienen reservas para el próximo año, así que es correcto ✅
+4.  1.  Esta consulta primero toma todos los vuelos realizados en el proximo año y los almacena en VUELOS_PROX_AÑO. Luego, se hace un natural obteniendo: todos los nuevos del próximo año, las reservas correspondientes y los pasajeros correspondientes. Así se obtienen todos los pasajeros junto con su vuelo y su asiento que tienen reservas para el próximo año, así que es correcto ✅
 
-       `VUELOS_PROX_AÑO <— σfecha_vuelo >= 1/1/2024 AND fecha_vuelo <= 31/12/2024 VUELO
-RES <— Π #pasajero,#vuelo,#asiento (VUELOS_PROX_AÑO |X| RESERVA |X|
-PASAJERO_RESERVA)`
+               `VUELOS_PROX_AÑO <— σfecha_vuelo >= 1/1/2024 AND fecha_vuelo <= 31/12/2024 VUELO
 
-    2. La tabla VUELO no tiene el atributo ciudad_salida o ciudad_destino pero supongo que se refieren a aeropueto_salida y aeropueto_destino.
+        RES <— Π #pasajero,#vuelo,#asiento (VUELOS_PROX_AÑO |X| RESERVA |X|
+        PASAJERO_RESERVA)`
 
-       - Se crea una tabla con todos los vuelos con salida de Buenos Aires y destino Cordoba
-       - Se toman todas las reservas de agosto de 2023. Se hace un natural con la tabla creada antes. Se obtiene una tabla con todos los vuelos con origen Buenos Aires y destino Cordoba que se hicieron en Agosto de 2023.
-       - Se quiere proyectar el atributo monto_total de la tabla generad en el punto anterior. Esto falla ya que no existe el atributo.
+            2. La tabla VUELO no tiene el atributo ciudad_salida o ciudad_destino pero supongo que se refieren a aeropueto_salida y aeropueto_destino.
 
-       No es correcto ❌
+               - Se crea una tabla con todos los vuelos con salida de Buenos Aires y destino Cordoba
+               - Se toman todas las reservas de agosto de 2023. Se hace un natural con la tabla creada antes. Se obtiene una tabla con todos los vuelos con origen Buenos Aires y destino Cordoba que se hicieron en Agosto de 2023.
+               - Se quiere proyectar el atributo monto_total de la tabla generad en el punto anterior. Esto falla ya que no existe el atributo.
 
-       `VUELOS_BUE_CBA <— σciudad_salida=“Buenos Aires” AND ciudad_destino=“Córdoba” VUELO
-RESERV_AGO <— ( σfecha_reserva >= 1/8/2023 AND fecha_reserva <= 31/8/2023RESERVA) |X|
-VUELOS_BUE_CBARES <— Π monto_total RESERV_AGO`
+               No es correcto ❌
 
-    3. - Se renombran los atributos de la tabla Pasajero con los atributos: `#p, nom, d, pun`
-       - Se obtiene una tabla que mezcla los valores de la tabla Pasajero con la anterior
-       - Se obtienen solo los pasajeros que tengan un puntaje alto?
-       - Se obtienen todos los pasajeros que tengan puntaje bajo
-       - Se obtienen todos los pasajeros que tengan puntajes bajos de nuevo
+               `VUELOS_BUE_CBA <— σciudad_salida=“Buenos Aires” AND ciudad_destino=“Córdoba” VUELO
 
-       Esto no es correcto ya que no se evalúa si tienen vuelos pendientes. ❌
+        RESERV_AGO <— ( σfecha_reserva >= 1/8/2023 AND fecha_reserva <= 31/8/2023RESERVA) |X|
+        VUELOS_BUE_CBARES <— Π monto_total RESERV_AGO`
 
-       `PUN_ALTOS <— σ pun < puntaje (PASAJERO X ( ρ (#p, nom, d, pun) PASAJERO)
-PUN_BAJOS <— ( Π puntaje PASAJEROS ) - ( Π puntaje PUN_ALTOS )
-RES <— PASAJEROS |X| PUN_BAJOS`
+            3. - Se renombran los atributos de la tabla Pasajero con los atributos: `#p, nom, d, pun`
+               - Se obtiene una tabla que mezcla los valores de la tabla Pasajero con la anterior
+               - Se obtienen solo los pasajeros que tengan un puntaje alto?
+               - Se obtienen todos los pasajeros que tengan puntaje bajo
+               - Se obtienen todos los pasajeros que tengan puntajes bajos de nuevo
 
-    4. - Obtengo todos los NUMEROS de vuelos que salgan del aeropuerto “Ministro Pistarini”
-       - Obtengo todos los NÚMEROS de pasajeros que hayan hecho una reserva
-       - Obtengo nombre y dni de los pasajeros que hayan hecho una reserva de vuelos que salgan del aeropuerto “Ministro Pistarini”
+               Esto no es correcto ya que no se evalúa si tienen vuelos pendientes. ❌
 
-       Cumple ✅
+               `PUN_ALTOS <— σ pun < puntaje (PASAJERO X ( ρ (#p, nom, d, pun) PASAJERO)
 
-       Arreglo: no cumple pq relaciona reserva y quiere sacar el nmero de pasajero de ahí pero no esta en esa tabla xD
+        PUN_BAJOS <— ( Π puntaje PASAJEROS ) - ( Π puntaje PUN_ALTOS )
+        RES <— PASAJEROS |X| PUN_BAJOS`
 
-       `VUELOS_PISTARINI <- Π #vuelo (σaeropuerto_salida=“Ministro Pistarini” VUELO )
-RESERVA_PISTARINI <- Π #pasajero (VUELOS_PISTARINI |X| RESERVAS)
-PASAJEROS_PISTARINI <- Π nombre,dni (RESERVA_PISTARINI |X| PASAJERO)`
+            4. - Obtengo todos los NUMEROS de vuelos que salgan del aeropuerto “Ministro Pistarini”
+               - Obtengo todos los NÚMEROS de pasajeros que hayan hecho una reserva
+               - Obtengo nombre y dni de los pasajeros que hayan hecho una reserva de vuelos que salgan del aeropuerto “Ministro Pistarini”
 
-    5. La consulta en sí no está mal, sin embargo el id de pasajero no se encuentra en la tabla RESERVAS asi que hay una inconsistencia como el punto d.
+               Cumple ✅
 
-       `RESERVAS_MAS_99000 <- Π (#pasajero) (σ(monto < 99000) RESERVAS )`
+               Arreglo: no cumple pq relaciona reserva y quiere sacar el nmero de pasajero de ahí pero no esta en esa tabla xD
+
+               `VUELOS_PISTARINI <- Π #vuelo (σaeropuerto_salida=“Ministro Pistarini” VUELO )
+
+        RESERVA_PISTARINI <- Π #pasajero (VUELOS_PISTARINI |X| RESERVAS)
+        PASAJEROS_PISTARINI <- Π nombre,dni (RESERVA_PISTARINI |X| PASAJERO)`
+
+            5. La consulta en sí no está mal, sin embargo el id de pasajero no se encuentra en la tabla RESERVAS asi que hay una inconsistencia como el punto d.
+
+               `RESERVAS_MAS_99000 <- Π (#pasajero) (σ(monto < 99000) RESERVAS )`
+
+# Parte II
+
 5.  (es el 6 de la práctica)
 
     ```html
