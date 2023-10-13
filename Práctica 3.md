@@ -105,5 +105,5 @@
 
         no_frecuenta ← `Π (bebedor) (bares_gusta - FRECUENTA)`
 
-    5.  `Π (bebedor) (GUSTA % (Π (cerveza) (σ (bar = "y") SIRVE)))`
-    6.  `Π (bebedor) (GUSTA % (Π (cerveza) SIRVE))`
+    5.  `GUSTA % (Π (cerveza) (σ (bar = "y") SIRVE))`
+    6.  `GUSTA % (Π (cerveza) SIRVE)` //creo q ta mal :(
