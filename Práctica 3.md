@@ -23,34 +23,31 @@
 3.  La respuesta correcta es: `(#compra, cantidad)`. Ya que primero se toman solo los #producto de Producto y luego se hace la división con **COMPRA_PRODUCTO**, así que se listan todos los elementos de ese esquema sin el atributo **#producto.**
 4.  1.  Esta consulta primero toma todos los vuelos realizados en el proximo año y los almacena en VUELOS_PROX_AÑO. Luego, se hace un natural obteniendo: todos los nuevos del próximo año, las reservas correspondientes y los pasajeros correspondientes. Así se obtienen todos los pasajeros junto con su vuelo y su asiento que tienen reservas para el próximo año, así que es correcto ✅
 
-            2. La tabla VUELO no tiene el atributo ciudad_salida o ciudad_destino pero supongo que se refieren a aeropueto_salida y aeropueto_destino.
+    2.  La tabla VUELO no tiene el atributo ciudad_salida o ciudad_destino pero supongo que se refieren a aeropueto_salida y aeropueto_destino.
 
-               - Se crea una tabla con todos los vuelos con salida de Buenos Aires y destino Cordoba
-               - Se toman todas las reservas de agosto de 2023. Se hace un natural con la tabla creada antes. Se obtiene una tabla con todos los vuelos con origen Buenos Aires y destino Cordoba que se hicieron en Agosto de 2023.
-               - Se quiere proyectar el atributo monto_total de la tabla generad en el punto anterior. Esto falla ya que no existe el atributo.
+        - Se crea una tabla con todos los vuelos con salida de Buenos Aires y destino Cordoba
+        - Se toman todas las reservas de agosto de 2023. Se hace un natural con la tabla creada antes. Se obtiene una tabla con todos los vuelos con origen Buenos Aires y destino Cordoba que se hicieron en Agosto de 2023.
+        - Se quiere proyectar el atributo monto_total de la tabla generad en el punto anterior. Esto falla ya que no existe el atributo.
 
-               No es correcto ❌
+        No es correcto ❌
 
+    3.  - Se renombran los atributos de la tabla Pasajero con los atributos: `#p, nom, d, pun`
+        - Se obtiene una tabla que mezcla los valores de la tabla Pasajero con la anterior
+        - Se obtienen solo los pasajeros que tengan un puntaje alto?
+        - Se obtienen todos los pasajeros que tengan puntaje bajo
+        - Se obtienen todos los pasajeros que tengan puntajes bajos de nuevo
 
-            3. - Se renombran los atributos de la tabla Pasajero con los atributos: `#p, nom, d, pun`
-               - Se obtiene una tabla que mezcla los valores de la tabla Pasajero con la anterior
-               - Se obtienen solo los pasajeros que tengan un puntaje alto?
-               - Se obtienen todos los pasajeros que tengan puntaje bajo
-               - Se obtienen todos los pasajeros que tengan puntajes bajos de nuevo
+        Esto no es correcto ya que no se evalúa si tienen vuelos pendientes. ❌
 
-               Esto no es correcto ya que no se evalúa si tienen vuelos pendientes. ❌
+    4.  - Obtengo todos los NUMEROS de vuelos que salgan del aeropuerto “Ministro Pistarini”
+        - Obtengo todos los NÚMEROS de pasajeros que hayan hecho una reserva
+        - Obtengo nombre y dni de los pasajeros que hayan hecho una reserva de vuelos que salgan del aeropuerto “Ministro Pistarini”
 
-            4. - Obtengo todos los NUMEROS de vuelos que salgan del aeropuerto “Ministro Pistarini”
-               - Obtengo todos los NÚMEROS de pasajeros que hayan hecho una reserva
-               - Obtengo nombre y dni de los pasajeros que hayan hecho una reserva de vuelos que salgan del aeropuerto “Ministro Pistarini”
+        Cumple ✅
 
-               Cumple ✅
+            Arreglo: no cumple pq relaciona reserva y quiere sacar el nmero de pasajero de ahí pero no esta en esa tabla xD
 
-               Arreglo: no cumple pq relaciona reserva y quiere sacar el nmero de pasajero de ahí pero no esta en esa tabla xD
-
-
-
-            5. La consulta en sí no está mal, sin embargo el id de pasajero no se encuentra en la tabla RESERVAS asi que hay una inconsistencia como el punto d.
+5.  La consulta en sí no está mal, sin embargo el id de pasajero no se encuentra en la tabla RESERVAS asi que hay una inconsistencia como el punto d.
 
 # Parte II
 
@@ -83,7 +80,7 @@
 
         estudiantes_argentinos_noLI07 ← `Π (nombreCompleto) (estudiantes_argentinos - carrera_LI07)`
 
-    3.  `Π(#legajo)(INSCRIPCIONMATERIA % (Π (codigoDeMateria) MATERIA))`
+    3.  `(INSCRIPCIONMATERIA % (Π (codigoDeMateria) MATERIA))`
 
 7.  (8 de la práctica)
 
@@ -91,7 +88,11 @@
     #curso) CURSO_REALIZADO (#empleado, #curso)
 
     1. `(CURSO_REALIZADO % (Π (#curso) CURSO_EXIGIDO))`
-    2. `(CURSO_REALIZADO % (Π (#curso) CURSO_EXIGIDO % Π (#curso) LUGAR_TRABAJO))` //NO SÉ COMO HACERLO :// sé que esto esta mal entonces capaz debería hacer un producto antes no sé
+    2. cursos_hechos_no_exigidos ← `(Π (#curso) CURSO_REALIZADO) - (Π (#curso) CURSO_EXIGIDO)` → tomo los cursos que hizo pero no eran exigidos
+
+       cursos_hechos_exigidos ← `(Π (#curso) CURSO_REALIZADO - (cursos_hechos_no_exigidos))` → tomo los cursos que hizo que eran exigidos
+
+       `Π (#empleado) (cursos_hechos_exigidos |x| curso_realizado)`
 
 8.  (9 de la práctica)
 
@@ -100,10 +101,17 @@
     1.  `Π (bar) (Π (cerveza) (σ (bebedor= "x") GUSTA |X| SIRVE)`
 
     2.  `Π (bebedor) (GUSTA |X| SIRVE |X| FRECUENTA)`
-    3.  NO SÉ COMO HACERLO 😭😭😭
+    3.  bares_gusta ← `Π (bebedor, bar) (GUSTA |X| SIRVE)`
+
+        no_frecuenta ← `Π (bebedor) (FRECUENTA - bares_gusta)`
+
+        `Π (bebedor) FRECUENTA - no_frecuenta`
+
     4.  bares_gusta ← `Π (bebedor, bar) (GUSTA |X| SIRVE)`
 
         no_frecuenta ← `Π (bebedor) (bares_gusta - FRECUENTA)`
 
     5.  `GUSTA % (Π (cerveza) (σ (bar = "y") SIRVE))`
-    6.  `GUSTA % (Π (cerveza) SIRVE)` //creo q ta mal :(
+    6.  cervezas ← `Π (cerveza) SIRVE`
+
+        `GUSTA % (Π (cerveza) (SIRVE % cervezas))`
