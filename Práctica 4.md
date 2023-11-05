@@ -225,10 +225,10 @@ No sabía cómo hacerlo desde la terminal asi que lo hice desde el workbench. Cr
        DECLARE clienteTarjetaPrimaria VARCHAR(16);
        DECLARE clienteTarjetaSecundaria VARCHAR(16);
 
-       SELECT domicilioCliente, ciudadCliente, tarjetaPrimaria, tarjetaSecundaria
+       SELECT c.domicilioCliente, c.ciudadCliente, c.tarjetaPrimaria, c.tarjetaSecundaria
        INTO clienteDomicilio, clienteCiudad, clienteTarjetaPrimaria, clienteTarjetaSecundaria
-       FROM CLIENTE
-       WHERE dniCliente = dniCliente;
+       FROM CLIENTE c
+       WHERE c.dniCliente = dniCliente;
 
        START TRANSACTION;
 
@@ -261,8 +261,6 @@ No sabía cómo hacerlo desde la terminal asi que lo hice desde el workbench. Cr
         'bomba de combustible'
     );
     ```
-
-    El resultado fue: `Error Code: 1172. Result consisted of more than one row`.
 
 11. ```sql
     EXPLAIN select count(r.dniCliente) from reparacion r, cliente c, sucursal s, revisionreparacion rv where

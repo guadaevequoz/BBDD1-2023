@@ -88,11 +88,11 @@
     #curso) CURSO_REALIZADO (#empleado, #curso)
 
     1. `(CURSO_REALIZADO % (Π (#curso) CURSO_EXIGIDO))`
-    2. cursos_hechos_no_exigidos ← `(Π (#curso) CURSO_REALIZADO) - (Π (#curso) CURSO_EXIGIDO)` → tomo los cursos que hizo pero no eran exigidos
+    2. cursos_empleados ←`Π (#curso, #empleado) LUGAR_TRABAJO |X| CURSO_EXIGIDO`
 
-       cursos_hechos_exigidos ← `(Π (#curso) CURSO_REALIZADO - (cursos_hechos_no_exigidos))` → tomo los cursos que hizo que eran exigidos
+       cursos_no_hechos ←`cursos_empleados - curso_realizado`
 
-       `Π (#empleado) (cursos_hechos_exigidos |x| curso_realizado)`
+       `Π (#empleado) lugar_trabajo - Π (#empleado) cursos_no_hechos`
 
 8.  (9 de la práctica)
 
@@ -101,11 +101,11 @@
     1.  `Π (bar) (Π (cerveza) (σ (bebedor= "x") GUSTA |X| SIRVE)`
 
     2.  `Π (bebedor) (GUSTA |X| SIRVE |X| FRECUENTA)`
-    3.  bares_gusta ← `Π (bebedor, bar) (GUSTA |X| SIRVE)`
+    3.  bares_gusta ← `Π (bebedor) (GUSTA |X| SIRVE |X| FRECUENTA)`
 
-        no_frecuenta ← `Π (bebedor) (FRECUENTA - bares_gusta)`
+        frecuenta_no_gusta ← `Π (bebedor) (Π (bebedor,cerveza) (FRECUENTA |X| SIRVE) - Π (bebedor,cerveza) (GUSTA |X| SIRVE))`
 
-        `Π (bebedor) FRECUENTA - no_frecuenta`
+        `bares_gusta - frecuenta_no_gusta`
 
     4.  bares_gusta ← `Π (bebedor, bar) (GUSTA |X| SIRVE)`
 
